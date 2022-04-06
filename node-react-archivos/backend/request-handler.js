@@ -1,7 +1,7 @@
 const url = require("url");
 const StringDecoder = require("string_decoder").StringDecoder;
 const enrutador = require("./enrutador");
-
+const { numeroAleatorio } = require("./util");
 module.exports = (req, res) => {
   // 1. obtener url desde el objeto request // OK
   const urlActual = req.url;
@@ -69,6 +69,10 @@ module.exports = (req, res) => {
       headers,
       payload: buffer,
     };
+    if (metodo === "post" && data.payload) {
+      data.payload.id = numeroAleatorio;
+    }
+
 
     console.log({ data });
 
