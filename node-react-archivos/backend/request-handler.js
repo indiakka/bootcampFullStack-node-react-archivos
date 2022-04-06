@@ -70,7 +70,7 @@ module.exports = (req, res) => {
       payload: buffer,
     };
     if (metodo === "post" && data.payload) {
-      data.payload.id = numeroAleatorio;
+      data.payload.id = numeroAleatorio();
     }
 
 
