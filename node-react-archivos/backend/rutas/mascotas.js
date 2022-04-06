@@ -1,3 +1,5 @@
+const { crear } = require("../data-handler");
+const directorioEntidad = "mascotas";
 
 module.exports = function mascotasHandler(mascotas) {
   return {
@@ -35,7 +37,7 @@ module.exports = function mascotasHandler(mascotas) {
             /*  creo una expresión regular para que la búsqueda
            devuelva el resultado aunque sea may. o min. o partes parciales
            de una palabra poniendo el ig ej: gat de gato*/
-            const expresionRegular = new RegExp( data.query[ llave ], "ig" );
+            const expresionRegular = new RegExp(data.query[llave], "ig");
             /* resultado  guarda la verificación de la expresión regular en cada uno de los campos 
             búsqueda y los objetos de mascota, nos dice si el criterio está
             o no, en el objeto de mascota que estamos evaluando en el momento */
@@ -57,8 +59,21 @@ module.exports = function mascotasHandler(mascotas) {
       callback(200, mascotas);
     },
     post: (data, callback) => {
-      mascotas.push(data.payload);
-      callback(201, data.payload);
+      if (data && data.payload && data.payload.id) {
+        crear(
+          {
+            directorioEntidad,
+            nombreArchivo: data.payload.id,
+            datosGuardar: data.payload,
+          },
+          (error) => {
+            if (error) {
+              return callback(500, { mensaje: error.message });
+            }
+            callback(201, data.payload);
+          }
+        );
+      }
     },
     put: (data, callback) => {
       if (typeof data.indice !== "undefined") {
