@@ -3,6 +3,9 @@ const mascotas = require("./rutas/mascotas");
 const veterinarias = require("./rutas/veterinarias");
 const duenos = require("./rutas/duenos");
 const consultas = require("./rutas/consultas");
+const path = require("path");
+const fs = require("fs");
+
 
 module.exports = {
   ruta: (data, callback) => {

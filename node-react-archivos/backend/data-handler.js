@@ -46,5 +46,16 @@ const dataHandler = {
       }
     );
   },
+  listar: ({ directorioEntidad = "mascotas" }, callback) => {
+    fs.readdir(`${directorioBase}/${directorioEntidad}/`, (error, files) => {
+      if (error) {
+        return callback(new Error(`No se pudo listar desde ${directorioBase}`));
+      }
+      console.log(files)
+    });
+  },
 };
+
+dataHandler.listar({}, ()=> {})
+
 module.exports = dataHandler;
