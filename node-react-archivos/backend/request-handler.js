@@ -2,7 +2,9 @@ const url = require("url");
 const StringDecoder = require("string_decoder").StringDecoder;
 const enrutador = require("./enrutador");
 const { numeroAleatorio } = require("./util");
-module.exports = (req, res) => {
+
+module.exports = ( req, res ) =>
+{
   // 1. obtener url desde el objeto request // OK
   const urlActual = req.url;
   const urlParseada = url.parse(urlActual, true);
@@ -61,7 +63,7 @@ module.exports = (req, res) => {
       var [rutaPrincipal, indice] = rutaLimpia.split("/");
     }
     //3.5 ordenar la data del request
-    const data = {
+    let data = {
       indice,
       ruta: rutaPrincipal || rutaLimpia,
       query,
@@ -72,7 +74,6 @@ module.exports = (req, res) => {
     if (metodo === "post" && data.payload) {
       data.payload.id = numeroAleatorio();
     }
-
 
     console.log({ data });
 
@@ -88,7 +89,13 @@ module.exports = (req, res) => {
     // 4. ejecutar handler (manejador) para enviar la respuesta
     if (typeof handler === "function") {
       handler(data, (statusCode = 200, mensaje) => {
-        const respuesta = JSON.stringify(mensaje);
+        let respuesta = null;
+        if (typeof mensaje === "string") {
+          respuesta = mensaje;
+        }
+        if (typeof mensaje === "object") {
+          respuesta = JSON.stringify(mensaje);
+        }
         res.setHeader("Content-Type", "application/json");
         res.writeHead(statusCode);
         // linea donde realmente ya estamos respondiendo a la aplicación cliente

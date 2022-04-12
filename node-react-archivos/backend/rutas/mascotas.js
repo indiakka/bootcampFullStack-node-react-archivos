@@ -1,4 +1,4 @@
-const { crear } = require("../data-handler");
+const { crear, obtenerUno } = require("../data-handler");
 const directorioEntidad = "mascotas";
 
 module.exports = function mascotasHandler(mascotas) {
@@ -6,12 +6,20 @@ module.exports = function mascotasHandler(mascotas) {
     get: (data, callback) => {
       console.log("handler mascotas", { data });
       if (typeof data.indice !== "undefined") {
-        if (mascotas[data.indice]) {
-          return callback(200, mascotas[data.indice]);
-        }
-        return callback(404, {
-          mensaje: `mascota con indice ${data.indice} no encontrada`,
-        }); // poniendo `` es un literal
+        return obtenerUno(
+          {
+            directorioEntidad: "mascotas",
+            nombreArchivo: data.indice,
+          },
+          (error, _mascota) => {
+            if (error) {
+              return callback(500, {
+                mensaje: `mascota con indice ${data.indice} no fué encontrada o el archivo no puede ser abierto`,
+              });
+            }
+            return callback(200, mascotas);
+          }
+        );
       }
 
       /* verifico que data.query traiga datos
