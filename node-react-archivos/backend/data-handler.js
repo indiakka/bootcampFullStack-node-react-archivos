@@ -51,11 +51,28 @@ const dataHandler = {
       if (error) {
         return callback(new Error(`No se pudo listar desde ${directorioBase}`));
       }
-      console.log(files)
+      files = files.filter((file) => file.includes(".json"));
+      files.map((file) => {
+        fs.readFile(
+          `${directorioBase}/${directorioEntidad}/${file}`,
+          "utf-8",
+          (error2, dataArchivo) => {
+            if (error2) {
+              return callback(
+                new Error(
+                  `No se pudo leer el archivo o no existe cuando listamos ${directorioBase}`
+                )
+              );
+            }
+            console.log(dataArchivo);
+            return callback(false, dataArchivo);
+          }
+        );
+      });
     });
   },
 };
 
-dataHandler.listar({}, ()=> {})
+dataHandler.listar({}, () => {});
 
 module.exports = dataHandler;
