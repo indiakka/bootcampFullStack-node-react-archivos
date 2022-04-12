@@ -46,33 +46,25 @@ const dataHandler = {
       }
     );
   },
-  listar: ({ directorioEntidad = "mascotas" }, callback) => {
-    fs.readdir(`${directorioBase}/${directorioEntidad}/`, (error, files) => {
-      if (error) {
-        return callback(new Error(`No se pudo listar desde ${directorioBase}`));
-      }
-      files = files.filter((file) => file.includes(".json"));
-      files.map((file) => {
-        fs.readFile(
-          `${directorioBase}/${directorioEntidad}/${file}`,
-          "utf-8",
-          (error2, dataArchivo) => {
-            if (error2) {
-              return callback(
-                new Error(
-                  `No se pudo leer el archivo o no existe cuando listamos ${directorioBase}`
-                )
-              );
-            }
-            console.log(dataArchivo);
-            return callback(false, dataArchivo);
-          }
+  listar: async ({ directorioEntidad = "mascotas" }, callback) => {
+    try {
+      let archivos = await fs.promises.readdir(
+        `${directorioBase}/${directorioEntidad}/`
+      );
+      archivos = archivos.filter((file) => file.includes(".json"));
+      const arrayPromesasLeerArchivo = archivos.map((archivo) => {
+        return fs.promises.readFile(
+          `${directorioBase}/${directorioEntidad}/${archivo}`,
+          { encoding: "utf-8" }
         );
       });
-    });
+      let datosArchivos = await Promise.all(arrayPromesasLeerArchivo);
+      datosArchivos = datosArchivos.map(JSON.parse);
+      return callback(false, datosArchivos);
+    } catch (error) {
+      return callback(new Error(`No se pudo listar desde ${directorioBase}`));
+    }
   },
 };
-
-dataHandler.listar({}, () => {});
 
 module.exports = dataHandler;
