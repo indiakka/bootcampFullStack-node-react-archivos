@@ -6,20 +6,11 @@ module.exports = function mascotasHandler(mascotas) {
     get: async (data, callback) => {
       console.log("handler mascotas", { data });
       if (typeof data.indice !== "undefined") {
-        return obtenerUno(
-          {
-            directorioEntidad: "mascotas",
-            nombreArchivo: data.indice,
-          },
-          (error, _mascota) => {
-            if (error) {
-              return callback(500, {
-                mensaje: `mascota con indice ${data.indice} no fué encontrada o el archivo no puede ser abierto`,
-              });
-            }
-            return callback(200, mascotas);
-          }
-        );
+        const _mascota = await obtenerUno({
+          directorioEntidad: "mascotas",
+          nombreArchivo: data.indice,
+        });
+        return callback(200, _mascota);
       }
 
       /* verifico que data.query traiga datos
@@ -65,15 +56,13 @@ module.exports = function mascotasHandler(mascotas) {
         return callback(200, respuestaMascotas);
       }
       try {
-        const _mascotas = await listar({ directorioEntidad: "mascotas" }) 
-        callback(200, _mascotas)
-      
+        const _mascotas = await listar({ directorioEntidad: "mascotas" });
+        callback(200, _mascotas);
       } catch (error) {
-         if (error) {
+        if (error) {
           return callback(500, { mensaje: error.message });
         }
       }
-      
     },
     post: (data, callback) => {
       if (data && data.payload && data.payload.id) {
