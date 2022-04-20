@@ -1,4 +1,10 @@
-const { crear, obtenerUno, listar, actualizar } = require("../data-handler");
+const {
+  crear,
+  obtenerUno,
+  listar,
+  actualizar,
+  eliminar,
+} = require("../data-handler");
 const directorioEntidad = "mascotas";
 
 module.exports = function mascotasHandler(mascotas) {
@@ -98,26 +104,26 @@ module.exports = function mascotasHandler(mascotas) {
       }
       callback(400, { mensaje: "Falta id" });
     },
-    
-    delete: (data, callback) => {
+
+    delete: async (data, callback) => {
       if (typeof data.indice !== "undefined") {
-        if (mascotas[data.indice]) {
-          /* esta condicional, esta pidiendo un data.indice y en la siguiente linea
-           le está diciendo que mascotas sea igual a lo mismo, pero
-           filtrando que el indice pasado anteriormente no esté en él. Ya que será
-           el que se va a eliminar */
-          mascotas = mascotas.filter(
-            (_mascota, indice) => indice != data.indice
-          ); // la _ indica que puede que se use o no esa variable
-          return callback(204, {
-            mensaje: `elemento con indice ${data.indice} eliminado`,
+        const resultado = await eliminar({
+          directorioEntidad: "mascotas",
+          nombreArchivo: data.indice,
+        });
+        
+        if (resultado.message) {
+          return callback(404, {
+            mensaje: `Mascota con indice ${data.indice} no encontrada`,
           });
         }
-        return callback(404, {
-          mensaje: `mascota con indice ${data.indice} no encontrada`,
-        });
+        if ( resultado.mensaje )
+        {
+          return callback(204);
+        }
+        return callback(500, { mensaje: "Error al actualizar" });
       }
-      callback(400, { mensaje: "indice no enviado" });
+      callback(400, { mensaje: "Falta id" });
     },
   };
 };

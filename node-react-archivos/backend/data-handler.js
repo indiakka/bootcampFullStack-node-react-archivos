@@ -92,6 +92,20 @@ const dataHandler = {
       return error;
     }
   },
+  eliminar: async ({ directorioEntidad = "mascotas", nombreArchivo }) => {
+    try {
+      const rutaCompleta = `${directorioBase}/${directorioEntidad}/${nombreArchivo}.json`;
+      const existeArchivo = fs.existsSync(rutaCompleta);
+      if (!existeArchivo) {
+        throw new Error(`La entidad con id = ${nombreArchivo}, no existe `);
+      }
+
+      const resultadoEliminar = await fs.promises.unlink(rutaCompleta);
+      return { mensaje: true };
+    } catch (error) {
+      return error;
+    }
+  },
 };
 
 module.exports = dataHandler;
