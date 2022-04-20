@@ -1,4 +1,4 @@
-const { crear, obtenerUno, listar } = require("../data-handler");
+const { crear, obtenerUno, listar, actualizar } = require("../data-handler");
 const directorioEntidad = "mascotas";
 
 module.exports = function mascotasHandler(mascotas) {
@@ -73,21 +73,32 @@ module.exports = function mascotasHandler(mascotas) {
         });
         return callback(201, resultado);
       }
-      callback(400, { mensaje: "Hay un error, no se envió el payload o no se creó el id" });
+      callback(400, {
+        mensaje: "Hay un error, no se envió el payload o no se creó el id",
+      });
     },
 
-    put: (data, callback) => {
+    put: async (data, callback) => {
       if (typeof data.indice !== "undefined") {
-        if (mascotas[data.indice]) {
-          mascotas[data.indice] = data.payload;
-          return callback(200, mascotas[data.indice]);
-        }
-        return callback(404, {
-          mensaje: `mascota con indice ${data.indice} no encontrada`,
+        const datosActuales = { ...data.payload, id: data.indice };
+        const resultado = await actualizar({
+          directorioEntidad: "mascotas",
+          nombreArchivo: data.indice,
+          datosActuales,
         });
+        if (resultado.id) {
+          return callback(200, resultado);
+        }
+        if (resultado.message) {
+          return callback(404, {
+            mensaje: `mascota con indice ${data.indice} no encontrada`,
+          });
+        }
+        return callback(500, { mensaje: "Error al actualizar" });
       }
-      callback(400, { mensaje: "indice no enviado" });
+      callback(400, { mensaje: "Falta id" });
     },
+    
     delete: (data, callback) => {
       if (typeof data.indice !== "undefined") {
         if (mascotas[data.indice]) {
