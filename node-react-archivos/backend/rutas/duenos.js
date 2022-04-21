@@ -1,4 +1,10 @@
-const { obtenerUno, crear, listar, actualizar } = require("../data-handler");
+const {
+  obtenerUno,
+  crear,
+  listar,
+  actualizar,
+  eliminar,
+} = require("../data-handler");
 const { palabraSinAcentos } = require("../util");
 const directorioEntidad = "duenos";
 
@@ -85,14 +91,14 @@ module.exports = function duenosHandler(duenos) {
         mensaje: "Hay un error, no se envió el payload o no se creó el id",
       });
     },
-    put: async(data, callback) => {
+    put: async (data, callback) => {
       if (typeof data.indice !== "undefined") {
         const datosActuales = { ...data.payload, id: data.indice };
         const resultado = await actualizar({
           directorioEntidad,
           nombreArchivo: data.indice,
           datosActuales,
-        } );
+        });
         if (resultado.id) {
           return callback(200, resultado);
         }
@@ -100,26 +106,27 @@ module.exports = function duenosHandler(duenos) {
           mensaje: `Dueño con indice ${data.indice} no encontrado`,
         });
       }
-      
+
       callback(400, { mensaje: "Falta id" });
     },
-    delete: (data, callback) => {
+    delete: async (data, callback) => {
       if (typeof data.indice !== "undefined") {
-        if (duenos[data.indice]) {
-          /* esta condicional, esta pidiendo un data.indice y en la siguiente linea
-           le está diciendo que duenos sea igual a lo mismo, pero
-           filtrando que el indice pasado anteriormente no esté en él. Ya que será
-           el que se va a eliminar */
-          duenos = duenos.filter((_dueno, indice) => indice != data.indice);
-          return callback(204, {
-            mensaje: `elemento con indice ${data.indice} eliminado`,
+        const resultado = await eliminar({
+          directorioEntidad,
+          nombreArchivo: data.indice,
+        });
+        if (resultado.message) {
+          return callback(404, {
+            mensaje: `Dueño con id ${data.indice} no encontrado`,
           });
         }
-        return callback(404, {
-          mensaje: `dueno con indice ${data.indice} no encontrado`,
-        });
+        if (resultado.mensaje) {
+          return callback(204);
+        }
+        return callback(500, { mensaje: "Error al actualizar" });
       }
-      callback(400, { mensaje: "indice no enviado" });
+
+      callback(400, { mensaje: "Falta id" });
     },
   };
 };
