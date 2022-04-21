@@ -11,9 +11,15 @@ module.exports = function mascotasHandler() {
   return {
     get: async (data, callback) => {
       console.log("handler mascotas", { data });
-     
 
       try {
+        if (typeof data.indice !== "undefined") {
+          const _mascota = await obtenerUno({
+            directorioEntidad: "mascotas",
+            nombreArchivo: data.indice,
+          });
+          return callback(200, _mascota);
+        }
         const _mascotas = await listar({ directorioEntidad: "mascotas" });
         /* verifico que data.query traiga datos
       en tipo o nombre o dueno, esto significa
