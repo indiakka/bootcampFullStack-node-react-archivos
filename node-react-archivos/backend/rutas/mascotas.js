@@ -15,7 +15,7 @@ module.exports = function mascotasHandler() {
       try {
         if (typeof data.indice !== "undefined") {
           const _mascota = await obtenerUno({
-            directorioEntidad: "mascotas",
+            directorioEntidad,
             nombreArchivo: data.indice,
           });
           return callback(200, _mascota);
@@ -88,7 +88,7 @@ module.exports = function mascotasHandler() {
       if (typeof data.indice !== "undefined") {
         const datosActuales = { ...data.payload, id: data.indice };
         const resultado = await actualizar({
-          directorioEntidad: "mascotas",
+          directorioEntidad,
           nombreArchivo: data.indice,
           datosActuales,
         });
@@ -97,7 +97,7 @@ module.exports = function mascotasHandler() {
         }
         if (resultado.message) {
           return callback(404, {
-            mensaje: `mascota con indice ${data.indice} no encontrada`,
+            mensaje: `Mascota con indice ${data.indice} no encontrada`,
           });
         }
         return callback(500, { mensaje: "Error al actualizar" });
@@ -108,7 +108,7 @@ module.exports = function mascotasHandler() {
     delete: async (data, callback) => {
       if (typeof data.indice !== "undefined") {
         const resultado = await eliminar({
-          directorioEntidad: "mascotas",
+          directorioEntidad ,
           nombreArchivo: data.indice,
         });
 

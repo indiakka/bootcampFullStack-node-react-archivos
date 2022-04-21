@@ -1,4 +1,4 @@
-const { obtenerUno, crear, listar } = require("../data-handler");
+const { obtenerUno, crear, listar, actualizar } = require("../data-handler");
 const { palabraSinAcentos } = require("../util");
 const directorioEntidad = "duenos";
 
@@ -8,7 +8,7 @@ module.exports = function duenosHandler(duenos) {
       try {
         if (typeof data.indice !== "undefined") {
           const _dueno = await obtenerUno({
-            directorioEntidad: "duenos",
+            directorioEntidad,
             nombreArchivo: data.indice,
           });
 
@@ -21,7 +21,7 @@ module.exports = function duenosHandler(duenos) {
           }); // poniendo `` es un literal
         }
         const _duenos = await listar({
-          directorioEntidad: "duenos",
+          directorioEntidad,
         });
 
         if (
@@ -85,17 +85,23 @@ module.exports = function duenosHandler(duenos) {
         mensaje: "Hay un error, no se envió el payload o no se creó el id",
       });
     },
-    put: (data, callback) => {
+    put: async(data, callback) => {
       if (typeof data.indice !== "undefined") {
-        if (duenos[data.indice]) {
-          duenos[data.indice] = data.payload;
-          return callback(200, duenos[data.indice]);
+        const datosActuales = { ...data.payload, id: data.indice };
+        const resultado = await actualizar({
+          directorioEntidad,
+          nombreArchivo: data.indice,
+          datosActuales,
+        } );
+        if (resultado.id) {
+          return callback(200, resultado);
         }
         return callback(404, {
-          mensaje: `dueno con indice ${data.indice} no encontrado`,
+          mensaje: `Dueño con indice ${data.indice} no encontrado`,
         });
       }
-      callback(400, { mensaje: "indice no enviado" });
+      
+      callback(400, { mensaje: "Falta id" });
     },
     delete: (data, callback) => {
       if (typeof data.indice !== "undefined") {
