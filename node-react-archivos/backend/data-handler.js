@@ -36,8 +36,8 @@ const dataHandler = {
       const resultado = await fs.promises.readFile(archivo, {
         encoding: "utf-8",
       });
-
-      return resultado;
+const resultadoJSON = JSON.parse(resultado)
+      return resultadoJSON;
     } catch (error) {
       return new Error("No se pudo leer el archivo o no existe");
     }
@@ -55,8 +55,7 @@ const dataHandler = {
           agregarExtension: false,
         });
       });
-      let datosArchivos = await Promise.all(arrayPromesasLeerArchivo);
-      datosArchivos = datosArchivos.map(JSON.parse);
+      const datosArchivos = await Promise.all(arrayPromesasLeerArchivo);
       return datosArchivos;
     } catch (error) {
       return new Error(`No se pudo listar desde ${directorioBase}`);

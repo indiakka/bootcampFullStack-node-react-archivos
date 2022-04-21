@@ -1,7 +1,6 @@
-const { obtenerUno, crear } = require("../data-handler");
+const { obtenerUno, crear, listar } = require("../data-handler");
 const { palabraSinAcentos } = require("../util");
 const directorioEntidad = "duenos";
-
 
 module.exports = function duenosHandler(duenos) {
   return {
@@ -11,20 +10,20 @@ module.exports = function duenosHandler(duenos) {
           const _dueno = await obtenerUno({
             directorioEntidad: "duenos",
             nombreArchivo: data.indice,
-          } );
-          
-          if ( _dueno && _dueno.id )
-          {
-            return callback (200, _dueno)
+          });
+
+          if (_dueno && _dueno.id) {
+            return callback(200, _dueno);
           }
 
           return callback(404, {
             mensaje: `Dueño con id ${data.indice} no encontradO`,
           }); // poniendo `` es un literal
         }
-        /* verifico que data.query traiga datos
-        en dni o nombre o apellido, esto significa
-        que el request es una búsqueda */
+        const _duenos = await listar({
+          directorioEntidad: "duenos",
+        });
+
         if (
           data.query &&
           (data.query.nombre || data.query.apellido || data.query.dni)
@@ -33,7 +32,7 @@ module.exports = function duenosHandler(duenos) {
           const llavesQuery = Object.keys(data.query);
           /* clono el array de duenoss que viene de reucursos  y este
            irá guardando los resultados */
-          let respuestaDuenos = [...duenos];
+          let respuestaDuenos = [..._duenos];
 
           /* filtro el array de respuestas con el index solamente dejar
             los objetos de duenos que cumplen con la búsqueda */
@@ -65,7 +64,7 @@ module.exports = function duenosHandler(duenos) {
           });
           return callback(200, respuestaDuenos);
         }
-        callback(200, duenos);
+        callback(200, _duenos);
       } catch (error) {
         if (error) {
           return callback(500, { mensaje: error.message });
@@ -73,19 +72,18 @@ module.exports = function duenosHandler(duenos) {
       }
     },
 
-    post: async ( data, callback ) =>
-    {
-       if (data && data.payload && data.payload.id) {
-         const resultado = await crear({
-           directorioEntidad,
-           nombreArchivo: data.payload.id,
-           datosGuardar: data.payload,
-         });
-         return callback(201, resultado);
-       }
-    callback(400, {
-      mensaje: "Hay un error, no se envió el payload o no se creó el id",
-    });
+    post: async (data, callback) => {
+      if (data && data.payload && data.payload.id) {
+        const resultado = await crear({
+          directorioEntidad,
+          nombreArchivo: data.payload.id,
+          datosGuardar: data.payload,
+        });
+        return callback(201, resultado);
+      }
+      callback(400, {
+        mensaje: "Hay un error, no se envió el payload o no se creó el id",
+      });
     },
     put: (data, callback) => {
       if (typeof data.indice !== "undefined") {
