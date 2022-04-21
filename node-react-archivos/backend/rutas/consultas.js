@@ -1,3 +1,12 @@
+const {
+  crear,
+  obtenerUno,
+  listar,
+  actualizar,
+  eliminar,
+} = require("../data-handler");
+const directorioEntidad = "consultas";
+
 module.exports = function consultasHandler({
   consultas,
   veterinarias,
@@ -57,15 +66,21 @@ module.exports = function consultasHandler({
       }));
       callback(200, _consultas);
     },
-    post: (data, callback) => {
-      let nuevaConsulta = data.payload;
-      nuevaConsulta.fechaCreacion = new Date();
-      nuevaConsulta.fechaEdicion = null;
-      consultas = [...consultas, nuevaConsulta];
-      // ... significa lo que hay en consultas, más nueva consulta
-      callback(201, nuevaConsulta);
+    post: async (data, callback) => {
+      if (data && data.payload && data.payload.id) {
+        const resultado = await crear({
+          directorioEntidad,
+          nombreArchivo: data.payload.id,
+          datosGuardar: data.payload,
+        });
+        return callback(201, resultado);
+      }
+      callback(400, {
+        mensaje: "Hay un error, no se envió el payload o no se creó el id",
+      });
     },
-    put: (data, callback) => {
+
+    put: async (data, callback) => {
       if (typeof data.indice !== "undefined") {
         if (consultas[data.indice]) {
           const { fechaCreacion } = consultas[data.indice];
