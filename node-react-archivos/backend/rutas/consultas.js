@@ -7,10 +7,7 @@ const {
 } = require("../data-handler");
 const directorioEntidad = "consultas";
 
-module.exports = function consultasHandler({
-  consultas,
-  
-}) {
+module.exports = function consultasHandler({ consultas }) {
   return {
     get: async (data, callback) => {
       console.log("handler consultas", { data });
@@ -99,21 +96,25 @@ module.exports = function consultasHandler({
 
     put: async (data, callback) => {
       if (typeof data.indice !== "undefined") {
-        if (consultas[data.indice]) {
-          const { fechaCreacion } = consultas[data.indice];
-          consultas[data.indice] = {
-            ...data.payload,
-            fechaCreacion,
-            fechaEdicion: new Date(),
-          };
-          return callback(200, consultas[data.indice]);
-        }
-        return callback(404, {
-          mensaje: `consulta con indice ${data.indice} no encontrado`,
+        const datosActuales = { ...data.payload, id: data.indice };
+        const resultado = await actualizar({
+          directorioEntidad,
+          nombreArchivo: data.indice,
+          datosActuales,
         });
+        if (resultado.id) {
+          return callback(200, resultado);
+        }
+        if (resultado.message) {
+          return callback(404, {
+            mensaje: `Consulta con id ${data.indice} no encontrada`,
+          });
+        }
+        return callback(500, { mensaje: "Error al actualizar" });
       }
-      callback(400, { mensaje: "indice no enviado" });
+      callback(400, { mensaje: "Falta id" });
     },
+
     delete: (data, callback) => {
       if (typeof data.indice !== "undefined") {
         if (consultas[data.indice]) {
