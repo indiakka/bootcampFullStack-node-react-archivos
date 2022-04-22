@@ -17,7 +17,7 @@ function Tabla({
           <Fila
             key={`fila-${index}`}
             entidad={entidad}
-            index={index}
+            index={entidad.id ? entidad.id: false}
             editarEntidad={editarEntidad}
             eliminarEntidad={eliminarEntidad}
             columnas={columnas}
