@@ -13,24 +13,30 @@ module.exports = function consultasHandler({
   mascotas,
 }) {
   return {
-    get: (data, callback) => {
+    get: async (data, callback) => {
+      console.log("handler consultas", { data });
       if (typeof data.indice !== "undefined") {
-        console.log("handler consultas", { data });
-        if (consultas[data.indice]) {
-          return callback(200, consultas[data.indice]);
+        const _consulta = await obtenerUno({
+          directorioEntidad,
+          nombreArchivo: data.indice,
+        });
+
+        if (_consulta && _consulta.id) {
+          return callback(200, _consulta);
         }
+
         return callback(404, {
-          mensaje: `consulta con indice ${data.indice} no encontrado`,
+          mensaje: `consulta con id ${data.indice} no fue encontrada`,
         });
       }
-      let _consultas = [...consultas];
+
 
       if (
         data.query &&
         (data.query.mascota ||
           data.query.veterinaria ||
-          data.query.diagnostico ||
-          data.query.historia)
+          data.query.historia ||
+          data.query.diagnostico)
       ) {
         const llavesQuery = Object.keys(data.query);
         _consultas = _consultas.filter((_consulta) => {
@@ -39,6 +45,7 @@ module.exports = function consultasHandler({
             if (llave === "fechaEdicion" || llave === "fechaCreacion") {
               continue;
             }
+
             if (
               (llave === "diagnostico" || llave === "historia") &&
               data.query[llave]
@@ -56,15 +63,25 @@ module.exports = function consultasHandler({
           return resultado;
         });
       }
-      _consultas = _consultas.map((consulta) => ({
-        ...consulta,
-        mascota: { ...mascotas[consulta.mascota], id: consulta.mascota },
-        veterinaria: {
-          ...veterinarias[consulta.veterinaria],
-          id: consulta.veterinaria,
-        },
-      }));
-      callback(200, _consultas);
+      let respuesta = [];
+      for (const consulta of _consultas) {
+        respuesta = [
+          ...respuesta,
+          {
+            ...consulta,
+            mascota: await obtenerUno({
+              directorioEntidad: "mascotas",
+              nombreArchivo: consulta.mascota,
+            }),
+            veterinaria: await obtenerUno({
+              directorioEntidad: "veterinarias",
+              nombreArchivo: consulta.veterinaria,
+            }),
+          },
+        ];
+      }
+
+      callback(200, respuesta);
     },
     post: async (data, callback) => {
       if (data && data.payload && data.payload.id) {
