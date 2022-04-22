@@ -9,8 +9,7 @@ const directorioEntidad = "consultas";
 
 module.exports = function consultasHandler({
   consultas,
-  veterinarias,
-  mascotas,
+  
 }) {
   return {
     get: async (data, callback) => {
@@ -30,6 +29,7 @@ module.exports = function consultasHandler({
         });
       }
 
+      let _consultas = await listar({ directorioEntidad });
 
       if (
         data.query &&
