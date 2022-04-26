@@ -3,7 +3,6 @@ import ModalHeader from "./ModalHeader";
 import ModalFooter from "./ModalFooter";
 import "./Modal.css";
 
-
 function Modal({
   cambiarModal = () => {},
   crearEntidad = () => {},
@@ -17,7 +16,7 @@ function Modal({
             <ModalHeader cambiarModal={cambiarModal} />
             <div className="modal-body">
               <form id="form">
-                <div className="form-row"> {children} </div>
+                <div className="form-row">{children}</div>
               </form>
             </div>
             <ModalFooter

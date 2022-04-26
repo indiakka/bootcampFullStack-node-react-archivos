@@ -1,12 +1,12 @@
 import React from "react";
-import Select from "../Select";
 import Input from "../Input";
+import Select from "../Select";
 
 function ComponenteCampo({
   manejarInput = () => {},
   objeto = {},
   nombreCampo = "",
-  options= {}
+  options = {},
 }) {
   switch (nombreCampo) {
     case "tipo":
@@ -22,15 +22,16 @@ function ComponenteCampo({
               options={options[nombreCampo]}
               onChange={manejarInput}
               placeholder={nombreCampo}
-              value={objeto[nombreCampo]}
-              defaultValue={objeto[nombreCampo]}
-              selectedValue={objeto[nombreCampo]}
+              defaultValue={objeto[nombreCampo]} // TODO
+              selectedValue={objeto[nombreCampo]} // TODO
+              value={objeto[nombreCampo]} // TODO
             />
           ) : (
             "cargando opciones..."
           )}
         </div>
       );
+
     case "nombre":
     case "apellido":
     case "dni":
@@ -41,7 +42,7 @@ function ComponenteCampo({
           <Input
             nombreCampo={nombreCampo}
             tipo="text"
-            onChange={manejarInput}
+            onInput={manejarInput}
             placeholder={nombreCampo}
             value={objeto[nombreCampo]}
           />

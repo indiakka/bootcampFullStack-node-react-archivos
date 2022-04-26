@@ -24,57 +24,38 @@ module.exports = function veterinariasHandler(veterinarias) {
           }
 
           return callback(404, {
-            mensaje: `Veterinaria con id ${data.indice} no encontrado`,
+            mensaje: `Veterinari@ con id ${data.indice} no encontrado`,
           });
         }
 
         const _veterinarias = await listar({
           directorioEntidad: "veterinarias",
         });
+
         if (
           data.query &&
           (data.query.nombre || data.query.apellido || data.query.documento)
         ) {
-          //creo un array con las llaves del objeto data query
           const llavesQuery = Object.keys(data.query);
-          /* clono el array de veterinarias que viene de reucursos  y este
-         irá guardando los resultados */
-          let respuestaVeterinarias = [...veterinarias];
-          /* filtro el array de respuestas con el index solamente dejar
-          los objetos de veterinaria que cumplen con la búsqueda */
-          respuestaVeterinarias = respuestaVeterinarias.filter(
+          let respuestaveterinarias = [..._veterinarias];
+          respuestaveterinarias = respuestaveterinarias.filter(
             (_veterinaria) => {
               let resultado = false;
-
-              /* recorro cada una de las llaves con el fin de filtrar
-        según los criterios de búsqueda */
               for (const llave of llavesQuery) {
-                // Quitamos los acentos a las palabras que los tienen
                 const busqueda = palabraSinAcentos(data.query[llave]);
-                /*  creo una expresión regular para que la búsqueda
-            devuelva el resultado aunque sea may. o min. o partes parciales
-            de una palabra poniendo el ig ej: mar de marta*/
                 const expresionRegular = new RegExp(busqueda, "ig");
-                const campoVeterinariaSinAcentos = palabraSinAcentos(
+                const campoveterinariaSinAcentos = palabraSinAcentos(
                   _veterinaria[llave]
                 );
-                /* resultado  guarda la verificación de la expresión regular en cada uno de los campos
-              búsqueda y los objetos de mascota, nos dice si el criterio está
-            o no, en el objeto de mascota que estamos evaluando en el momento */
-                resultado = campoVeterinariaSinAcentos.match(expresionRegular);
-                /* si resultado es diferente a falso o null (.match entrega null cuando 
-            no hay match) entonces rompemos (break) el ciclo for */
+                resultado = campoveterinariaSinAcentos.match(expresionRegular);
                 if (resultado) {
                   break;
                 }
               }
-              /* null es falso por lo tanto el filter ignorará resultado === null
-           y los que si tengan el criterio de búsqueda entran al array respuestaMascotas */
               return resultado;
             }
           );
-
-          return callback(200, respuestaVeterinarias);
+          return callback(200, respuestaveterinarias);
         }
         callback(200, _veterinarias);
       } catch (error) {
@@ -84,7 +65,6 @@ module.exports = function veterinariasHandler(veterinarias) {
         }
       }
     },
-
     post: async (data, callback) => {
       if (data && data.payload && data.payload.id) {
         const resultado = await crear({
@@ -95,10 +75,10 @@ module.exports = function veterinariasHandler(veterinarias) {
         return callback(201, resultado);
       }
       callback(400, {
-        mensaje: "Hay un error, no se envió el payload o no se creó el id",
+        mensaje:
+          "Hay un error, no se envió el payload o no se creó el id",
       });
     },
-
     put: async (data, callback) => {
       if (typeof data.indice !== "undefined") {
         const datosActuales = { ...data.payload, id: data.indice };
@@ -113,13 +93,12 @@ module.exports = function veterinariasHandler(veterinarias) {
 
         if (resultado.message) {
           return callback(404, {
-            mensaje: `Veterinaria con indice ${data.indice} no encontrada`,
+            mensaje: `Veterinari@ con indice ${data.indice} no encontrada`,
           });
         }
       }
       callback(400, { mensaje: "Falta id" });
     },
-
     delete: async (data, callback) => {
       if (typeof data.indice !== "undefined") {
         const resultado = await eliminar({
@@ -128,7 +107,7 @@ module.exports = function veterinariasHandler(veterinarias) {
         });
         if (resultado.message) {
           return callback(404, {
-            mensaje: `Veterinaria con id ${data.indice} no encontrado`,
+            mensaje: `Veterinari@ con id ${data.indice} no encontrado`,
           });
         }
 

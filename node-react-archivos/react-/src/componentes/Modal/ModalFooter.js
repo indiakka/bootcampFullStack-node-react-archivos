@@ -14,10 +14,10 @@ function ModalFooter({ cambiarModal = () => {}, crearEntidad = () => {} }) {
       </button>
       <button
         onClick={crearEntidad}
-        id="btn-guardar"
-        data-dismiss="modal"
         type="button"
         className="btn btn-primary"
+        data-dismiss="modal"
+        id="btn-guardar"
       >
         Guardar
       </button>

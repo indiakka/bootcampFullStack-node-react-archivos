@@ -3,8 +3,7 @@ const StringDecoder = require("string_decoder").StringDecoder;
 const enrutador = require("./enrutador");
 const { numeroAleatorio } = require("./util");
 
-module.exports = ( req, res ) =>
-{
+module.exports = (req, res) => {
   // 1. obtener url desde el objeto request // OK
   const urlActual = req.url;
   const urlParseada = url.parse(urlActual, true);
@@ -44,8 +43,7 @@ module.exports = ( req, res ) =>
 
   // 3.4.1 ir acumulando la data cuando el request reciba un payload
   req.on("data", (data) => {
-    buffer += decoder.write(data);
-    // va a codificar cualquier pedazo de la data y la convierte en string
+    buffer += decoder.write(data); // va a codificar cualquier pedazo de la data y la convierte en string
   });
 
   // 3.4.2 terminar de acumular datos y decirle al decoder que finalice
@@ -71,11 +69,10 @@ module.exports = ( req, res ) =>
       headers,
       payload: buffer,
     };
+
     if (metodo === "post" && data.payload) {
       data.payload.id = numeroAleatorio();
     }
-
-    console.log({ data });
 
     // 3.6 elegir el manejador dependiendo de la ruta y asignarle función que el enrutador tiene
     let handler;
@@ -84,7 +81,6 @@ module.exports = ( req, res ) =>
     } else {
       handler = enrutador.noEncontrado;
     }
-    console.log("handler", handler);
 
     // 4. ejecutar handler (manejador) para enviar la respuesta
     if (typeof handler === "function") {

@@ -5,8 +5,8 @@ const {
   actualizar,
   eliminar,
 } = require("../data-handler");
-const directorioEntidad = "consultas";
 
+const directorioEntidad = "consultas";
 module.exports = function consultasHandler({ consultas }) {
   return {
     get: async (data, callback) => {
@@ -22,7 +22,7 @@ module.exports = function consultasHandler({ consultas }) {
         }
 
         return callback(404, {
-          mensaje: `consulta con id ${data.indice} no fue encontrada`,
+          mensaje: `Consulta con id ${data.indice} no fue encontrada`,
         });
       }
 
@@ -77,7 +77,6 @@ module.exports = function consultasHandler({ consultas }) {
           },
         ];
       }
-
       callback(200, respuesta);
     },
     post: async (data, callback) => {
@@ -90,10 +89,10 @@ module.exports = function consultasHandler({ consultas }) {
         return callback(201, resultado);
       }
       callback(400, {
-        mensaje: "Hay un error, no se envió el payload o no se creó el id",
+        mensaje:
+          "Hay un error, no se envió el payload o no se creó el id",
       });
     },
-
     put: async (data, callback) => {
       if (typeof data.indice !== "undefined") {
         const datosActuales = { ...data.payload, id: data.indice };
@@ -110,20 +109,19 @@ module.exports = function consultasHandler({ consultas }) {
             mensaje: `Consulta con id ${data.indice} no encontrada`,
           });
         }
-        return callback(500, { mensaje: "Error al actualizar" });
       }
       callback(400, { mensaje: "Falta id" });
     },
-
     delete: async (data, callback) => {
       if (typeof data.indice !== "undefined") {
         const resultado = await eliminar({
           directorioEntidad,
           nombreArchivo: data.indice,
         });
+
         if (resultado.message) {
           return callback(404, {
-            mensaje: `Consulta con id ${data.indice} no encontrado`,
+            mensaje: `Consulta con id ${data.indice} no encontrada`,
           });
         }
 

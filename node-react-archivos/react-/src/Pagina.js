@@ -31,7 +31,7 @@ const opcionesIniciales = {
 
 class Pagina extends Component {
   constructor(props) {
-    super(props); //llama a todos los métodos del componente
+    super(props);
     this.state = {
       mostraModal: false,
       entidades: [],
@@ -73,7 +73,7 @@ class Pagina extends Component {
     });
     let _columnas = [];
     if (Array.isArray(entidades) && entidades.length > 0) {
-      _columnas = Object.keys(entidades[0]).filter((col) => col !== 'id') || [];
+      _columnas = Object.keys(entidades[0]).filter((col) => col !== "id") || [];
     }
     this.setState({ entidades, columnas: _columnas });
   };
@@ -85,7 +85,7 @@ class Pagina extends Component {
     let { objeto } = this.state;
     objeto = { ...objeto, [name]: value };
     this.setState({ objeto });
-  }; //... copia de objeto del constructor
+  };
 
   crearEntidad = async (_evento = null) => {
     const { entidad } = this.props;
@@ -105,19 +105,20 @@ class Pagina extends Component {
       duenosPromise,
     ]);
     mascota = mascota.map((_mascota, index) => ({
-      valor: index.toString(),
+      valor: _mascota.id,
       etiqueta: `${_mascota.nombre} (${_mascota.tipo})`,
     }));
     veterinaria = veterinaria.map((_veterinaria, index) => ({
-      valor: index.toString(),
+      valor: _veterinaria.id,
       etiqueta: `${_veterinaria.nombre} ${_veterinaria.apellido}`,
     }));
     dueno = dueno.map((_dueno, index) => ({
-      valor: index.toString(),
+      valor: _dueno.id,
       etiqueta: `${_dueno.nombre} ${_dueno.apellido}`,
     }));
     const nuevasOpciones = { ...options, mascota, veterinaria, dueno };
     this.setState({ ...newState, options: nuevasOpciones }, () => {
+      //... copia de objeto del constructor
       this.listar();
     });
   };
@@ -152,10 +153,9 @@ class Pagina extends Component {
     this.listar();
   }
 
-  // código del componente
-
-  // render siempre debe ir el último
+  // codigo del componente
   //render = interpreta el código para mostrar
+  // el método render siempre debe ir de último
   render() {
     const { titulo = "Página sin título", entidad } = this.props;
     const { columnas, idObjeto, entidades, objeto, options } = this.state;
@@ -186,9 +186,9 @@ class Pagina extends Component {
             {columnas.map((columna, index) => (
               <ComponenteCampo
                 key={index}
-                nombreCampo={columna}
                 manejarInput={this.manejarInput}
                 objeto={objeto}
+                nombreCampo={columna}
                 options={options}
               />
             ))}

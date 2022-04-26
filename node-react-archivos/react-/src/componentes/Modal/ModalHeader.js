@@ -1,7 +1,7 @@
 import React from "react";
 import "./ModalHeader.css";
 
-function ModalHeader( { cambiarModal = () => {} }) {
+function ModalHeader({ cambiarModal = () => {} }) {
   return (
     <div className="modal-header">
       <h5 className="modal-title" id="exampleModalCenterTitle">

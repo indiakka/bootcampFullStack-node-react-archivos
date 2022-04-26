@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Encabezado from "./Encabezado";
 import Fila from "./Fila";
 import "./Tabla.css";
@@ -16,8 +16,8 @@ function Tabla({
         {entidades.map((entidad, index) => (
           <Fila
             key={`fila-${index}`}
+            index={entidad.id ? entidad.id : false}
             entidad={entidad}
-            index={entidad.id ? entidad.id: false}
             editarEntidad={editarEntidad}
             eliminarEntidad={eliminarEntidad}
             columnas={columnas}

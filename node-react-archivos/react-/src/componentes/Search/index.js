@@ -13,7 +13,7 @@ function Search({
       <input
         className="form-control mr-sm-2"
         type="search"
-        name= 'search'
+        name="search"
         placeholder="Search"
         aria-label="Search"
         onInput={manejarSearchInput}
@@ -23,13 +23,13 @@ function Search({
           <Select
             nombreCampo="mascota"
             options={options.mascota ? options.mascota : []}
-            placeholder="Búsqueda por mascota"
+            placeholder="búsqueda por mascota"
             onChange={manejarSearchInput}
           />
           <Select
             nombreCampo="veterinaria"
             options={options.veterinaria ? options.veterinaria : []}
-            placeholder="Búsqueda por veterinari@"
+            placeholder="búsqueda por veterinaria"
             onChange={manejarSearchInput}
           />
         </>

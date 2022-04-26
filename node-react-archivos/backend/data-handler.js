@@ -20,7 +20,6 @@ const dataHandler = {
       return error;
     }
   },
-
   obtenerUno: async ({
     directorioEntidad = "mascotas",
     nombreArchivo,
@@ -36,7 +35,7 @@ const dataHandler = {
       const resultado = await fs.promises.readFile(archivo, {
         encoding: "utf-8",
       });
-const resultadoJSON = JSON.parse(resultado)
+      const resultadoJSON = JSON.parse(resultado);
       return resultadoJSON;
     } catch (error) {
       return new Error("No se pudo leer el archivo o no existe");
@@ -70,19 +69,21 @@ const resultadoJSON = JSON.parse(resultado)
       const rutaCompleta = `${directorioBase}/${directorioEntidad}/${nombreArchivo}.json`;
       const existeArchivo = fs.existsSync(rutaCompleta);
       if (!existeArchivo) {
-        throw new Error(`La entidad con id = ${nombreArchivo}, no existe `);
+        throw new Error(`La entidad con id = ${nombreArchivo} no existe`);
       }
       const datosAnterioresJSON = await dataHandler.obtenerUno({
         directorioEntidad,
         nombreArchivo,
       });
+
       const resultadoEliminar = await fs.promises.unlink(rutaCompleta);
+      console.log({ resultadoEliminar });
+
       const fileDescriptor = await fs.promises.open(rutaCompleta, "wx");
       const datosFinalesParaGuardar = {
         ...datosAnterioresJSON,
         ...datosActuales,
-      };
-      //combinar los datos actuales y los anteriores
+      }; //combina los datos actuales y los anteriores
       const datosEnString = JSON.stringify(datosFinalesParaGuardar);
       await fs.promises.writeFile(fileDescriptor, datosEnString);
       return datosFinalesParaGuardar;
@@ -95,9 +96,8 @@ const resultadoJSON = JSON.parse(resultado)
       const rutaCompleta = `${directorioBase}/${directorioEntidad}/${nombreArchivo}.json`;
       const existeArchivo = fs.existsSync(rutaCompleta);
       if (!existeArchivo) {
-        throw new Error(`La entidad con id = ${nombreArchivo}, no existe `);
+        throw new Error(`La entidad con id = ${nombreArchivo} no existe`);
       }
-
       const resultadoEliminar = await fs.promises.unlink(rutaCompleta);
       return { mensaje: true };
     } catch (error) {

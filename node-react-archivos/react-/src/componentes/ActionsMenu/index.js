@@ -8,7 +8,7 @@ function ActionsMenu({
   manejarSearchInput = () => {},
   buscar = () => {},
   entidad = null,
-  options = []
+  options = [],
 }) {
   return (
     <div className="actions-menu">
@@ -21,7 +21,7 @@ function ActionsMenu({
           data-target="#exampleModalCenter"
           onClick={cambiarModal}
         >
-          Nuevo
+          Nueva
         </button>
         <Search
           manejarSearchInput={manejarSearchInput}

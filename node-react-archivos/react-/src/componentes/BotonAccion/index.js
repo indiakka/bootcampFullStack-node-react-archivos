@@ -12,8 +12,7 @@ function BotonAccion({ tipo, onClick = () => {}, index = "" }) {
         "btn-info": tipo === "editar",
         "btn-danger": tipo === "eliminar",
       })}
-      onClick={( e ) => onClick( e, index )}
-
+      onClick={(e) => onClick(e, index)}
     >
       {tipo === "editar" && <FontAwesomeIcon icon={faEdit} />}
       {tipo === "eliminar" && <FontAwesomeIcon icon={faTrashAlt} />}

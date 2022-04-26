@@ -1,7 +1,7 @@
 import React from "react";
 import "./Alert.css";
 
-function Alert({alertSwitch = () => {}}) {
+function Alert({ alertSwitch = () => {} }) {
   return (
     <div className="alert alert-danger alert-dismissible" role="alert">
       <strong>Oops!</strong> Algo hicimos mal, por favor vuelve a intentarlo!.
